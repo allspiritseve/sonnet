@@ -9,11 +9,11 @@ module Sonnet
         ::Sidekiq::Logging.with_context(source: item['class']) do
           begin
             start = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
-            logger.debug(:start)
+            logger.debug(message: "start")
             yield
-            logger.debug(:done, duration: elapsed(start))
+            logger.debug(message: "done", duration: elapsed(start))
           rescue
-            logger.debug(:failure, duration: elapsed(start))
+            logger.debug(message: "failure", duration: elapsed(start))
             raise
           end
         end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "sonnet/serializer"
+
 module Sonnet
   class Formatter
     TIMESTAMP_FORMAT = "%FT%T.%LZ"
@@ -26,7 +28,7 @@ module Sonnet
     def data
       case @data
       when Exception
-        serialize_exception(@data)
+        Serializer.serialize_exception(@data)
       when Hash
         @data
       else
@@ -41,14 +43,6 @@ module Sonnet
     # def hostname
     #   @hostname || Socket.gethostname.force_encoding('UTF-8')
     # end
-
-    def serialize_exception(exception)
-      {
-        kind: exception.class.name,
-        message: exception.to_s,
-        stack: exception.backtrace&.slice(0, 3)
-      }
-    end
 
     def serialize_string(string)
       { message: string.to_s }

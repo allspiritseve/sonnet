@@ -10,6 +10,10 @@ module Sonnet
       new(severity, time, progname, data).to_json
     end
 
+    def self.current_context
+      Thread.current[:sonnet_current_context] ||= []
+    end
+
     def initialize(severity, time, progname, data)
       @severity = severity
       @time = time
@@ -36,6 +40,20 @@ module Sonnet
       end
     end
 
+    def application_context
+      {
+        program: program,
+        # hostname: hostname,
+        level: level,
+        timestamp: timestamp,
+        pid: pid
+      }
+    end
+
+    def context
+      self.class.current_context.inject({}, &:merge)
+    end
+
     def level
       @severity&.downcase
     end
@@ -53,13 +71,7 @@ module Sonnet
     end
 
     def as_json
-      {
-        program: program,
-        # hostname: hostname,
-        level: level,
-        timestamp: timestamp,
-        pid: pid
-      }.merge(data).compact
+      context.merge(data).merge(application_context).compact
     end
 
     def to_json

@@ -8,5 +8,3 @@ require "json"
 
 module Sonnet
 end
-
-require "sonnet/rails" if defined?(::Rails::Engine)

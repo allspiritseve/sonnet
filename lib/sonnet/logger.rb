@@ -10,5 +10,12 @@ module Sonnet
     def self.log_level
       ::Logger.const_get((ENV["LOG_LEVEL"] || "INFO").upcase)
     end
+
+    def with_context(context = {})
+      formatter.current_context.push(context)
+      yield self
+    ensure
+      formatter.current_context.pop
+    end
   end
 end

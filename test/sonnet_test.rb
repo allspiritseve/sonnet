@@ -1,21 +1,35 @@
 require "test_helper"
-require "logger"
 
 class SonnetTest < Minitest::Test
   Error = Class.new(StandardError)
 
-  def test_that_it_has_a_version_number
-    refute_nil ::Sonnet::VERSION
-  end
-
-  def test_json_logging
+  def test_log_info
     logger.info("What's the story, morning glory?")
-    assert_equal log[0].fetch("message"), "What's the story, morning glory?"
+    assert_log_line log[0], level: "info", message: "What's the story, morning glory?"
   end
 
-  def test_exception_logging
+  def test_log_debug
+    logger.debug("this should not be logged")
+    assert_nil log[0]
+    logger.level = Logger::DEBUG
+    logger.debug("this should be logged")
+    assert_log_line log[0], level: "debug", message: "this should be logged"
+  end
+
+  def test_log_exception
     logger.error(Error.new("something went wrong"))
-    assert_equal log[0]["message"], "something went wrong"
+    assert_log_line log[0], message: "something went wrong"
+  end
+
+  def test_log_with_context
+    logger.with_context(color: "blue") { logger.info("What's the story, morning glory?") }
+    logger.info("definitely maybe")
+    assert_log_line log[0], color: "blue", message: "What's the story, morning glory?"
+    assert_log_line log[1], message: "definitely maybe"
+  end
+
+  def assert_log_line(actual, expected)
+    assert_equal expected, actual.slice(*expected.keys)
   end
 
   def logger
@@ -27,6 +41,6 @@ class SonnetTest < Minitest::Test
   end
 
   def log
-    io.string.each_line.map { |line| JSON.parse(line) }
+    io.string.each_line.map { |line| JSON.parse(line, symbolize_names: true) }
   end
 end

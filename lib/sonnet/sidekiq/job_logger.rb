@@ -2,7 +2,7 @@
 
 require "sidekiq/job_logger"
 
-module Album
+module Sonnet
   module Sidekiq
     class JobLogger < ::Sidekiq::JobLogger
       def call(item, queue)

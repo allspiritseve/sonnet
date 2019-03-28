@@ -4,12 +4,8 @@ module Sonnet
   class Formatter
     TIMESTAMP_FORMAT = "%FT%T.%LZ"
 
-    def self.call(*args)
-      severity, time, progname, data, *other = args
+    def self.call(severity, time, progname, data)
       new(severity, time, progname, data).to_json
-    rescue => e
-      debugger
-      raise e
     end
 
     def initialize(severity, time, progname, data)
@@ -42,12 +38,11 @@ module Sonnet
       @severity&.downcase
     end
 
-    def hostname
-      @hostname || Socket.gethostname.force_encoding('UTF-8')
-    end
+    # def hostname
+    #   @hostname || Socket.gethostname.force_encoding('UTF-8')
+    # end
 
     def serialize_exception(exception)
-      debugger
       {
         kind: exception.class.name,
         message: exception.to_s,
@@ -60,13 +55,13 @@ module Sonnet
     end
 
     def pid
-      @pid || $$
+      $$
     end
 
     def as_json
       {
         program: program,
-        hostname: hostname,
+        # hostname: hostname,
         level: level,
         timestamp: timestamp,
         pid: pid

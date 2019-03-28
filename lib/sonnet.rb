@@ -2,8 +2,11 @@
 
 require "sonnet/formatter"
 require "sonnet/logger"
-require "sonnet/monkeypatch"
 require "sonnet/version"
+
+require "json"
 
 module Sonnet
 end
+
+require "sonnet/rails" if defined?(::Rails::Engine)

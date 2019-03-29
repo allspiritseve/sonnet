@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "sidekiq/exception_handler"
-require "sonnet/serializer"
 
 module Sonnet
   module Sidekiq

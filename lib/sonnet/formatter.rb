@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require "sonnet/serializer"
+require "json"
+require "time"
 
 module Sonnet
   class Formatter
-    TIMESTAMP_FORMAT = "%FT%T.%LZ"
-
     def self.call(severity, time, progname, data)
       new(severity, time, progname, data).to_json
     end
@@ -26,13 +25,13 @@ module Sonnet
     end
 
     def timestamp
-      (@time || Time.now).utc.strftime(TIMESTAMP_FORMAT)
+      (@time || Time.now).utc.iso8601(3)
     end
 
     def data
       case @data
       when Exception
-        Serializer.serialize_exception(@data)
+        serialize_exception(@data)
       when Hash
         @data
       else
@@ -40,14 +39,16 @@ module Sonnet
       end
     end
 
-    def application_context
+    def serialize_exception(exception)
       {
-        program: program,
-        # hostname: hostname,
-        level: level,
-        timestamp: timestamp,
-        pid: pid
+        kind: exception.class.name,
+        message: exception.to_s,
+        stack: exception.backtrace&.slice(0, 3)
       }
+    end
+
+    def serialize_string(string)
+      { message: string.to_s }
     end
 
     def context
@@ -62,16 +63,18 @@ module Sonnet
     #   @hostname || Socket.gethostname.force_encoding('UTF-8')
     # end
 
-    def serialize_string(string)
-      { message: string.to_s }
-    end
-
     def pid
       $$
     end
 
     def as_json
-      context.merge(data).merge(application_context).compact
+      {
+        program: program,
+        # hostname: hostname,
+        level: level,
+        timestamp: timestamp,
+        pid: pid
+      }.merge(data).merge(context).compact
     end
 
     def to_json

@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Cory Kaufman-Schofield"]
   spec.email = ["cory@corykaufman.com"]
 
-  spec.summary = "Structured logs for Ruby applications"
-  spec.description = "Structured logs for Ruby applications"
+  spec.summary = "Structured logging for Ruby applications"
+  spec.description = "Structured logging for Ruby applications"
   spec.homepage = "https://github.com/allspiritseve/sonnet"
   spec.license = "MIT"
 

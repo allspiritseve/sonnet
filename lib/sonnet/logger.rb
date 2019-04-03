@@ -2,6 +2,10 @@
 
 module Sonnet
   module Logger
+    def self.new(logger)
+      logger.extend self
+    end
+
     def self.extended(logger)
       logger.formatter = Formatter
       logger.level = log_level
@@ -9,10 +13,6 @@ module Sonnet
 
     def self.log_level
       ::Logger.const_get((ENV["LOG_LEVEL"] || "INFO").upcase)
-    end
-
-    def self.new(logger)
-      logger.extend(self)
     end
 
     def with_context(context = {})

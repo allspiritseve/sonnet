@@ -18,6 +18,7 @@ module Sonnet
       @time = time
       @progname = progname
       @data = data
+      @tags = []
     end
 
     def program
@@ -52,7 +53,11 @@ module Sonnet
     end
 
     def context
-      self.class.current_context.inject({}, &:merge)
+      self.class.current_context.inject({}) do |memo, context|
+        tags = memo.fetch(:tags, []) + [*context.delete(:tags)].compact
+        tag_context = tags.empty? ? {} : { tags: tags }
+        memo.merge(context).merge(tag_context)
+      end
     end
 
     def level
@@ -74,7 +79,7 @@ module Sonnet
         level: level,
         timestamp: timestamp,
         pid: pid
-      }.merge(data).merge(context).compact
+      }.merge(context).merge(data).compact
     end
 
     def to_json(opts = nil)

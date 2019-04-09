@@ -28,6 +28,13 @@ class SonnetTest < Minitest::Test
     assert_log_line log[1], message: "definitely maybe"
   end
 
+  def test_new
+    logger = Sonnet::Logger.new(Logger.new(io))
+    assert_equal logger.formatter, Sonnet::Formatter
+    logger.info("What's the story, morning glory?")
+    assert_log_line log[0], level: "info", message: "What's the story, morning glory?"
+  end
+
   def assert_log_line(actual, expected)
     assert_equal expected, actual.slice(*expected.keys)
   end

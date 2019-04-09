@@ -39,8 +39,7 @@ Or install it yourself as:
 
 ```ruby
 require "sonnet"
-logger = Logger.new(STDOUT)
-logger.extend(Sonnet::Logger)
+logger = Sonnet::Logger.new(Logger.new(STDOUT))
 ```
 
 ## Ruby on Rails
@@ -63,6 +62,13 @@ hash. Some options:
 * attempt to guess at keys for each tag (possble if passing symbols to
   `log_tags`, but probably can't handle every use case).
 * Allow user to define keys for each tag
+
+### ActionDispatch::DebugExceptions
+
+This middleware logs exceptions as strings. Since it is included by default,
+the easiest workaround is to monkeypatch it to log the exception rather than
+strings, which means we can handle it with our usual exception logging in
+Sonnet::Formatter.
 
 ## Contributing
 

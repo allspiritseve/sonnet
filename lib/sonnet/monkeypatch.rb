@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if ActiveSupport::VERSION::MAJOR < 6
   # Monkeypatch in Rails 6 ActiveSupport::TaggedLogging initializer.
   # Solves problem in which the TaggedLogging initializer modifies an existing logger
@@ -36,4 +38,3 @@ else
   ActiveSupport::Deprecation.warn('No longer need to monkeypatch ActiveSupport::TaggedLogging!')
   ActiveSupport::Deprecation.warn('No longer need to monkeypatch ActionDispatch::DebugExceptions!')
 end
-

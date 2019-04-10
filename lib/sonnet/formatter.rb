@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "json"
-require "time"
+require 'json'
+require 'time'
 
 module Sonnet
   class Formatter
@@ -21,7 +21,7 @@ module Sonnet
     end
 
     def program
-      @progname || File.basename($0)
+      @progname || File.basename($0, '.rb').split(' ')[0]
     end
 
     def timestamp
@@ -77,8 +77,8 @@ module Sonnet
       }.merge(data).merge(context).compact
     end
 
-    def to_json
-      as_json.to_json + "\n"
+    def to_json(opts = nil)
+      as_json.to_json(opts) + "\n"
     end
   end
 end

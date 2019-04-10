@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "sidekiq/job_logger"
 
 module SidekiqLogging
@@ -9,7 +11,7 @@ module SidekiqLogging
   end
 
   class JobLogger < Sidekiq::JobLogger
-    def call(job_hash, queue, &block)
+    def call(job_hash, _queue, &_block)
       Sidekiq.logger.with_context(SidekiqLogging.job_context(job_hash)) do
         begin
           start = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)

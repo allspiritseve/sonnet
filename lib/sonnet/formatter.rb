@@ -54,7 +54,8 @@ module Sonnet
 
     def context
       self.class.current_context.inject({}) do |memo, context|
-        tags = memo.fetch(:tags, []) + [*context.delete(:tags)].compact
+        context = context.dup
+        tags = memo.fetch(:tags, []) + [*context.delete(:tags)].flatten.compact
         tag_context = tags.empty? ? {} : { tags: tags }
         memo.merge(context).merge(tag_context)
       end

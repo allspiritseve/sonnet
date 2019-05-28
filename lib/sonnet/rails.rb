@@ -24,14 +24,26 @@ module Sonnet
 
     def tagged(*tags, &block)
       if tags.present?
-        with_context(tags: tags, &block)
+        with_context(tags: tags.flatten, &block)
       else
         yield self
       end
     end
   end
 
+  module RailsFormatter
+    def current_tags
+      current_context.inject([]) do |memo, context|
+        memo + [*context[:tags]].flatten.compact
+      end
+    end
+  end
+
   module Logger
     include RailsLogger
+  end
+
+  class Formatter
+    extend RailsFormatter
   end
 end

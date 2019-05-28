@@ -33,4 +33,11 @@ class LoggerTest < Minitest::Test
     assert_equal log[0].slice(:color, :message), color: "blue", message: "What's the story, morning glory?"
     assert_equal log[1].slice(:color, :message), message: "definitely maybe"
   end
+
+  def test_new
+    logger = Sonnet::Logger.new(Logger.new(io))
+    assert_equal logger.formatter, Sonnet::Formatter
+    logger.info("What's the story, morning glory?")
+    assert_log_line log[0], level: "info", message: "What's the story, morning glory?"
+  end
 end

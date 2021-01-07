@@ -34,7 +34,10 @@ if ActiveSupport::VERSION::MAJOR < 6
       end
     end
   end
-else
-  ActiveSupport::Deprecation.warn('No longer need to monkeypatch ActiveSupport::TaggedLogging!')
-  ActiveSupport::Deprecation.warn('No longer need to monkeypatch ActionDispatch::DebugExceptions!')
+
+  module Sonnet
+    module RailsLogger
+      include LoggerSilence
+    end
+  end
 end
